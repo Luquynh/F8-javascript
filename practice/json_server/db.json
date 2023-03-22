@@ -1,0 +1,24 @@
+{
+  "courses": [
+    {
+      "name": "Happy Women 1",
+      "description": "10% all products",
+      "id": 1
+    },
+    {
+      "id": 2,
+      "name": "Happy Women",
+      "description": "10% all products"
+    },
+    {
+      "name": "Lu Quynh 1",
+      "description": "10% all products",
+      "id": 4
+    },
+    {
+      "name": "20521826",
+      "description": "10% all products",
+      "id": 5
+    }
+  ]
+}
