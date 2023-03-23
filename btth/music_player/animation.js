@@ -54,6 +54,7 @@ const $$ = document.querySelectorAll.bind(document);
 const playlist=$('.playlist')
 // attribute and method of object 
 const app={
+  currentIndex:0,
     songs:songs,
     render: function(){
             const htmls= this.songs.map(song=>{
@@ -72,14 +73,37 @@ const app={
             })
             $('.playlist').innerHTML=htmls.join('')
         },
+   
+        defineProperties: function(){
+          Object.defineProperty(this,'currentSong',{
+            get: function(){
+              return this.songs[this.currentIndex]
+            }
+          })
+        }
+        ,
+   
     start:function(){
-        //change the size of song's picture when scrolling 
+      //Define attribute for object
+      this.defineProperties()
+        //change the size of song's picture when scrolling (event listener)
         this.handleEvent()
+        //render list of songs 
         this.render()
-       
+      //Load the information of song into UI when running the app
+       this.loadCurrentSong()
       
     },
-
+    loadCurrentSong: function(){
+      const heading =$('header h2')
+      const cdThumb=$('.cd-thumb')
+      const audio=$('#audio')
+      heading.textContent=this.currentSong.name
+      cdThumb.style.backgroundImage=`url('${this.currentSong.image}')`
+      audio.src=this.currentSong.path
+      console.log(heading,cdThumb,audio)
+    }
+    ,
     handleEvent: function(){
         const cd=$('.cd')
         const CdWidth=cd.offsetWidth
@@ -88,7 +112,7 @@ const app={
             const newCdWidth=CdWidth-scrollTop
             cd.style.width=newCdWidth>0 ? newCdWidth +'px':0
             cd.style.opacity=newCdWidth/CdWidth;
-            console.log(newCdWidth);
+            
         }
     }
    
