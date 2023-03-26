@@ -1,64 +1,42 @@
-const songs=  [
-    {
-      name: "Click Pow Get Down",
-      singer: "Raftaar x Fortnite",
-      path: "https://mp3.vlcmusic.com/download.php?track_id=34737&format=320",
-      image: "https://i.ytimg.com/vi/jTLhQf5KJSc/maxresdefault.jpg"
-    },
-    {
-      name: "Tu Phir Se Aana",
-      singer: "Raftaar x Salim Merchant x Karma",
-      path: "https://mp3.vlcmusic.com/download.php?track_id=34213&format=320",
-      image:
-        "https://1.bp.blogspot.com/-kX21dGUuTdM/X85ij1SBeEI/AAAAAAAAKK4/feboCtDKkls19cZw3glZWRdJ6J8alCm-gCNcBGAsYHQ/s16000/Tu%2BAana%2BPhir%2BSe%2BRap%2BSong%2BLyrics%2BBy%2BRaftaar.jpg"
-    },
-    {
-      name: "Naachne Ka Shaunq",
-      singer: "Raftaar x Brobha V",
-      path:
-        "https://mp3.filmysongs.in/download.php?id=Naachne Ka Shaunq Raftaar Ft Brodha V Mp3 Hindi Song Filmysongs.co.mp3",
-      image: "https://i.ytimg.com/vi/QvswgfLDuPg/maxresdefault.jpg"
-    },
-    {
-      name: "Mantoiyat",
-      singer: "Raftaar x Nawazuddin Siddiqui",
-      path: "https://mp3.vlcmusic.com/download.php?track_id=14448&format=320",
-      image:
-        "https://a10.gaanacdn.com/images/song/39/24225939/crop_480x480_1536749130.jpg"
-    },
-    {
-      name: "Aage Chal",
-      singer: "Raftaar",
-      path: "https://mp3.vlcmusic.com/download.php?track_id=25791&format=320",
-      image:
-        "https://a10.gaanacdn.com/images/albums/72/3019572/crop_480x480_3019572.jpg"
-    },
-    {
-      name: "Damn",
-      singer: "Raftaar x kr$na",
-      path:
-        "https://mp3.filmisongs.com/go.php?id=Damn%20Song%20Raftaar%20Ft%20KrSNa.mp3",
-      image:
-        "https://filmisongs.xyz/wp-content/uploads/2020/07/Damn-Song-Raftaar-KrNa.jpg"
-    },
-    {
-      name: "Feeling You",
-      singer: "Raftaar x Harjas",
-      path: "https://mp3.vlcmusic.com/download.php?track_id=27145&format=320",
-      image:
-        "https://a10.gaanacdn.com/gn_img/albums/YoEWlabzXB/oEWlj5gYKz/size_xxl_1586752323.webp"
-    }
-  ]
+import { songs } from './songs.js'
 const $ = document.querySelector.bind(document);
 const $$ = document.querySelectorAll.bind(document);
+//lay danh sach bai hat 
 const playlist=$('.playlist')
+//lay dia nhac
+const cd=$('.cd')
+//tieu de dia
+const heading =$('header h2')
+//hinh anh trong dia
+const cdThumb=$('.cd-thumb')
+//audio trong dia
+const audio=$('#audio')
+//lay nut player
+const playbtn=$('.btn-toggle-play')
+//lay player
+const player=$('.player')
+//lay progress
+const progress=$('#progress')
+//lay nut next
+const nextbtn=$('.btn-next')
+//lay nut chuyen ve truoc
+const prevbtn=$('.btn-prev')
+//lay nut random
+const random_btn=$('.btn-random')
+//lay nut repeat
+const repeat_btn=$('.btn-repeat')
 // attribute and method of object 
 const app={
+  //lay bai duoc chon
   currentIndex:0,
+  //bai hat co duoc play
+  isplaying:false,
+  israndom:false,
+  isrepeat:false,
     songs:songs,
     render: function(){
-            const htmls= this.songs.map(song=>{
-              return ` <div class="song">
+            const htmls= this.songs.map((song,index)=>{
+              return ` <div class="song ${index===this.currentIndex? 'active':''}">
                   <div class="thumb"
                       style="background-image: url('${song.image}')">
                   </div>
@@ -95,17 +73,38 @@ const app={
       
     },
     loadCurrentSong: function(){
-      const heading =$('header h2')
-      const cdThumb=$('.cd-thumb')
-      const audio=$('#audio')
       heading.textContent=this.currentSong.name
       cdThumb.style.backgroundImage=`url('${this.currentSong.image}')`
       audio.src=this.currentSong.path
-      console.log(heading,cdThumb,audio)
+      
     }
     ,
+    nextSong: function(){
+      this.currentIndex++
+      if(this.currentIndex>=this.songs.length){
+        this.currentIndex=0
+      }
+      this.loadCurrentSong()
+    },
+    prevSong: function(){
+      this.currentIndex--
+      if(this.currentIndex<0){
+        this.currentIndex=this.songs.length-1
+      }
+      this.loadCurrentSong()
+    },
+    playrandomsong: function(){
+      let newIndex
+          do{
+            newIndex=Math.floor(Math.random()*this.songs.length)
+          }  while(newIndex===this.currentIndex)
+          console.log(newIndex)
+          this.currentIndex=newIndex
+          this.loadCurrentSong()
+    },
+    //xu li cac su kien
     handleEvent: function(){
-        const cd=$('.cd')
+        
         const CdWidth=cd.offsetWidth
         document.onscroll=function(){
             const scrollTop=window.scrollY||document.documentElement.scrollTop
@@ -113,6 +112,102 @@ const app={
             cd.style.width=newCdWidth>0 ? newCdWidth +'px':0
             cd.style.opacity=newCdWidth/CdWidth;
             
+        }
+        //handle event when cd is rotating or stop rotating
+        const cdthumbanimate = cdThumb.animate([
+          { transform: 'rotate(360deg)' }
+      ], {
+          duration: 2000,
+          iterations: Infinity
+      });
+        //click playbtn
+        playbtn.onclick=function(){
+          
+          if(app.isplaying){
+            audio.pause()
+          }
+          else{
+            audio.play()
+          }
+          //khi song play
+          audio.onplay=function(){
+            app.isplaying=true
+            player.classList.add('playing')
+            cdthumbanimate.play()
+          }
+          //khi song pause
+          audio.onpause= function(){
+            app.isplaying=false
+            player.classList.remove('playing')
+            cdthumbanimate.pause()
+            
+          }
+          //khi tien do bai hat thay doi
+          audio.ontimeupdate=function(){
+            if(audio.duration){
+            const progressPercent=Math.floor(audio.currentTime/audio.duration*100)
+            progress.value=progressPercent
+            
+            }
+            else{
+              console.log('no')
+            }
+          
+          }
+          //handle event when getting a fast forward or rewind
+          progress.onchange=function(e){
+            const seekTime=(audio.duration*e.target.value/100) 
+            audio.currentTime=seekTime
+            
+          }
+          //khi next song
+          nextbtn.onclick=function(){
+            if(app.israndom==false){
+              app.nextSong()
+            }
+            else{
+              app.playrandomsong()
+            }
+            app.render()
+            audio.play()
+          }
+          //occurr event prev song
+          prevbtn.onclick=function(){
+            if(app.israndom==false){
+              app.prevSong()
+            }
+            else{
+              app.playrandomsong()
+            }
+            app.render()
+            audio.play()
+          }
+          //xu li random
+          random_btn.onclick=function(e){
+            var value1=app.israndom
+            app.israndom=!value1
+
+            random_btn.classList.toggle('active',app.israndom)
+            
+          }
+          //xu li next song khi audio ended
+          audio.onended=function(){
+            
+            if(app.isrepeat){
+              audio.play()
+            }
+            else{
+              nextbtn.click();
+            }
+          }
+          //handle event when repeating 
+          repeat_btn.onclick=function(e){
+            var repeat=app.isrepeat
+            app.isrepeat=!repeat;
+            repeat_btn.classList.toggle('active',app.isrepeat)
+          }
+          
+          
         }
     }
    
