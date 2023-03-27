@@ -1,8 +1,10 @@
 import { songs } from './songs.js'
+// const PLAYER_STORAGE_KEY = 'myPlayerStorageKey';
 const $ = document.querySelector.bind(document);
 const $$ = document.querySelectorAll.bind(document);
 //lay danh sach bai hat 
 const playlist=$('.playlist')
+console.log(playlist);
 //lay dia nhac
 const cd=$('.cd')
 //tieu de dia
@@ -33,10 +35,11 @@ const app={
   isplaying:false,
   israndom:false,
   isrepeat:false,
+  
     songs:songs,
     render: function(){
             const htmls= this.songs.map((song,index)=>{
-              return ` <div class="song ${index===this.currentIndex? 'active':''}">
+              return ` <div class="song ${index===this.currentIndex? 'active':''}" data-index="${index}">
                   <div class="thumb"
                       style="background-image: url('${song.image}')">
                   </div>
@@ -49,8 +52,9 @@ const app={
                   </div>
               </div>`
             })
-            $('.playlist').innerHTML=htmls.join('')
+            playlist.innerHTML=htmls.join('')
         },
+        // settings: JSON.parse(localStorage.getItem(PLAYER_STORAGE_KEY)||{}),
    
         defineProperties: function(){
           Object.defineProperty(this,'currentSong',{
@@ -86,6 +90,15 @@ const app={
       }
       this.loadCurrentSong()
     },
+    scrollToActivesong:function(){
+      setTimeout(()=>{
+        $('.song.active').scrollIntoView({
+          behavior:'smooth',
+          block:nearest
+        })
+      },300)
+    }
+    ,
     prevSong: function(){
       this.currentIndex--
       if(this.currentIndex<0){
@@ -98,7 +111,7 @@ const app={
           do{
             newIndex=Math.floor(Math.random()*this.songs.length)
           }  while(newIndex===this.currentIndex)
-          console.log(newIndex)
+          // console.log(newIndex)
           this.currentIndex=newIndex
           this.loadCurrentSong()
     },
@@ -150,7 +163,7 @@ const app={
             
             }
             else{
-              console.log('no')
+              // console.log('no')
             }
           
           }
@@ -162,10 +175,10 @@ const app={
           }
           //khi next song
           nextbtn.onclick=function(){
-            if(app.israndom==false){
+            if(app.israndom==false &&app.isrepeat==false){
               app.nextSong()
             }
-            else{
+            else if(app.israndom){
               app.playrandomsong()
             }
             app.render()
@@ -173,10 +186,10 @@ const app={
           }
           //occurr event prev song
           prevbtn.onclick=function(){
-            if(app.israndom==false){
+            if(app.israndom==false &&app.isrepeat==false){
               app.prevSong()
             }
-            else{
+            else if(app.israndom ){
               app.playrandomsong()
             }
             app.render()
@@ -199,12 +212,36 @@ const app={
             else{
               nextbtn.click();
             }
+            //lang nghe hanh vi click vao playlist
+           
           }
+          playlist.onclick=function(e){
+            const songnode=e.target.closest('.song:not(.active)')
+           if(songnode||e.target.closest('.option') ){
+            //xu ly khi click vao song
+            if(songnode){
+              app.currentIndex=Number(songnode.dataset.index)
+              console.log(app.currentIndex)
+              app.loadCurrentSong()
+              app.render()
+              audio.play()
+            }
+            //xu li khi click vao song option
+            if(e.target.closest('.option')){
+              console.log(e.target)
+            }
+            
+            
+           }
+           
+          } 
+          
           //handle event when repeating 
           repeat_btn.onclick=function(e){
             var repeat=app.isrepeat
             app.isrepeat=!repeat;
             repeat_btn.classList.toggle('active',app.isrepeat)
+            // console.log(app.isrepeat)
           }
           
           

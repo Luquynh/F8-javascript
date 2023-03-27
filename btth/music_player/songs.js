@@ -1,5 +1,5 @@
 export const songs = [
-    {
+    { index:1,
         name: "Click Pow Get Down",
         singer: "Raftaar x Fortnite",
         path: "./music_audio/Fortnite___Click_Pow_Get_Down_Lobby_Music.mp3",
@@ -7,6 +7,7 @@ export const songs = [
         image: "https://i.ytimg.com/vi/jTLhQf5KJSc/maxresdefault.jpg"
       },
       {
+        index:2,
         name: "Tu Phir Se Aana",
         singer: "Raftaar x Salim Merchant x Karma",
         path: "./music_audio/Fortnite___Click_Pow_Get_Down_Lobby_Music.mp3",
@@ -15,12 +16,14 @@ export const songs = [
           "https://1.bp.blogspot.com/-kX21dGUuTdM/X85ij1SBeEI/AAAAAAAAKK4/feboCtDKkls19cZw3glZWRdJ6J8alCm-gCNcBGAsYHQ/s16000/Tu%2BAana%2BPhir%2BSe%2BRap%2BSong%2BLyrics%2BBy%2BRaftaar.jpg"
       },
       {
+        index: 3,
         name: "Naachne Ka Shaunq",
         singer: "Raftaar x Brobha V",
         path: "./music_audio/Fortnite___Click_Pow_Get_Down_Lobby_Music.mp3",
         image: "https://i.ytimg.com/vi/QvswgfLDuPg/maxresdefault.jpg"
       },
       {
+        index:4,
         name: "Mantoiyat",
         singer: "Raftaar x Nawazuddin Siddiqui",
         path: "./music_audio/Fortnite___Click_Pow_Get_Down_Lobby_Music.mp3",
@@ -28,6 +31,7 @@ export const songs = [
           "https://a10.gaanacdn.com/images/song/39/24225939/crop_480x480_1536749130.jpg"
       },
       {
+        index: 5,
         name: "Aage Chal",
         singer: "Raftaar",
         path: "./music_audio/Fortnite___Click_Pow_Get_Down_Lobby_Music.mp3",
@@ -35,6 +39,7 @@ export const songs = [
           "https://a10.gaanacdn.com/images/albums/72/3019572/crop_480x480_3019572.jpg"
       },
       {
+        index: 6,
         name: "Damn",
         singer: "Raftaar x kr$na",
         path: "./music_audio/Fortnite___Click_Pow_Get_Down_Lobby_Music.mp3",
